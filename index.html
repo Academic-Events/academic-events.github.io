@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Event websites</title>
+  <meta name="description" content="Websites for forums and academic events, with agendas, speakers and venue details.">
+  <meta name="theme-color" content="#13285B">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/archivo-latin-standard-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face { font-family: "Archivo"; font-style: normal; font-display: swap; font-weight: 100 900; font-stretch: 62% 125%;
+      src: url("assets/fonts/archivo-latin-standard-normal.woff2") format("woff2-variations"), url("assets/fonts/archivo-latin-standard-normal.woff2") format("woff2"); }
+    :root { --ink: #13285B; --red: #D71F27; --paper: #F4F6FA; --surface: #fff; --line: #DFE4EE; --muted: #545E78; --node: #A3ABBE; --gutter: 16px; }
+    @media (min-width: 720px) { :root { --gutter: 32px; } }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: "Archivo", "Segoe UI", system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.6; color: var(--ink); background: var(--paper); border-top: 5px solid var(--red); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--red); outline-offset: 3px; border-radius: 4px; }
+    .wrap { width: min(1100px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+    header.top { padding: 22px 0; }
+    .mark { display: inline-flex; align-items: center; gap: 10px; font-weight: 760; font-stretch: 116%; text-decoration: none; }
+    .mark svg { width: 30px; height: 30px; }
+    .intro { padding: clamp(40px, 8vw, 96px) 0 clamp(32px, 5vw, 56px); }
+    h1 { margin: 0; font-size: clamp(2.6rem, 1rem + 6vw, 5.4rem); font-weight: 830; font-stretch: 118%; letter-spacing: -.025em; line-height: .95; }
+    .rule { display: block; width: 88px; height: 6px; background: var(--red); margin: 28px 0 18px; }
+    .intro p { margin: 0; max-width: 56ch; color: var(--muted); font-size: 1.1rem; }
+    .group-title { font-size: 1rem; font-weight: 700; color: var(--muted); margin: 0 0 16px; }
+    .events { list-style: none; margin: 0 0 56px; padding: 0; display: grid; gap: 20px; }
+    .event { position: relative; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .event img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1200 / 630; background: var(--line); }
+    .event-body { padding: 28px 32px; display: flex; flex-direction: column; gap: 8px; }
+    .event-date { font-weight: 700; color: var(--red); }
+    .event h2 { margin: 0; font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.1rem); font-weight: 800; font-stretch: 112%; letter-spacing: -.015em; line-height: 1.1; }
+    .event h2 a { text-decoration: none; }
+    .event h2 a::after { content: ""; position: absolute; inset: 0; }
+    .event-venue { font-weight: 600; }
+    .event-summary { color: var(--muted); margin: 0; }
+    .event-cta { margin-top: auto; padding-top: 10px; font-weight: 650; text-decoration: underline; text-decoration-color: var(--red); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+    .event.past img { filter: grayscale(.6); }
+    .event:hover { border-color: var(--node); }
+    .empty { color: var(--muted); }
+    footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--muted); font-size: .88rem; }
+    @media (max-width: 760px) { .event { grid-template-columns: 1fr; } .event-body { padding: 22px; } }
+  </style>
+</head>
+<body>
+  <header class="top"><div class="wrap">
+    <a class="mark" href="./">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 9 L15 4 L27 10 L22 22 L10 27 L5 9 L15 16 L27 10 M15 4 L15 16 L22 22 M15 16 L10 27" fill="none" stroke="#A3ABBE" stroke-width="1.6" stroke-linejoin="round"/><circle cx="15" cy="16" r="3.4" fill="#D71F27"/><circle cx="27" cy="10" r="2.4" fill="#D71F27"/></svg>
+      <span id="hub-title">Event websites</span>
+    </a>
+  </div></header>
+  <main class="wrap">
+    <section class="intro"><h1 id="hub-h1">Event websites</h1><span class="rule" aria-hidden="true"></span><p id="hub-intro"></p></section>
+    <div id="lists"></div>
+  </main>
+  <footer><div class="wrap" id="hub-disclaimer"></div></footer>
+
+  <script src="events.js"></script>
+  <script>
+    (function () {
+      var H = window.HUB || { events: [] };
+      var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+      document.title = H.title || document.title;
+      document.getElementById("hub-title").textContent = H.title || "";
+      document.getElementById("hub-h1").textContent = H.title || "";
+      document.getElementById("hub-intro").textContent = H.intro || "";
+      document.getElementById("hub-disclaimer").textContent = H.disclaimer || "";
+      var today = new Date().toISOString().slice(0, 10);
+      var up = H.events.filter(function (e) { return e.date >= today; }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+      var past = H.events.filter(function (e) { return e.date < today; }).sort(function (a, b) { return a.date > b.date ? -1 : 1; });
+      var card = function (e, isPast) {
+        return '<li class="event' + (isPast ? " past" : "") + '">' +
+          (e.image ? '<img src="' + esc(e.image) + '" alt="" loading="lazy">' : "") +
+          '<div class="event-body"><p class="event-date" style="margin:0">' + esc(e.dateLabel) + "</p>" +
+          '<h2><a href="' + esc(e.url) + '">' + esc(e.title) + "</a></h2>" +
+          '<p class="event-venue" style="margin:0">' + esc(e.venue) + "</p>" +
+          (e.summary ? '<p class="event-summary">' + esc(e.summary) + "</p>" : "") +
+          '<span class="event-cta" aria-hidden="true">' + (isPast ? "View the event page" : "Agenda and speakers") + "</span></div></li>";
+      };
+      var html = "";
+      html += '<h2 class="group-title">Upcoming events</h2>' + (up.length ? '<ol class="events">' + up.map(function (e) { return card(e, false); }).join("") + "</ol>" : '<p class="empty">New events will be listed here.</p>');
+      if (past.length) html += '<h2 class="group-title">Past events</h2><ol class="events">' + past.map(function (e) { return card(e, true); }).join("") + "</ol>";
+      document.getElementById("lists").innerHTML = html;
+    })();
+  </script>
+</body>
+</html>
